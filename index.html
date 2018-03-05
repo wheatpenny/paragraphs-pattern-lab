@@ -4,7 +4,7 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>reveal.js</title>
+		<title>Enabling Content Editors with Paragraphs and Atomic Design</title>
 
 		<link rel="stylesheet" href="css/reveal.css">
 		<link rel="stylesheet" href="css/theme/black.css">
@@ -24,9 +24,588 @@
 	<body>
 		<div class="reveal">
 			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
-			</div>
+				<section>
+					<h2>Enabling Content Editors with Paragraphs and Atomic Design</h2>
+				</section>
+				<section>
+					<h2>Levi Sigworth</h2>
+					<a class="fragment" href="https://xiah.io">xiah.io</a>
+					<a class="fragment" href="https://drupal.org/u/wheatpenny">drupal.org/u/wheatpenny</a>
+					<a class="fragment" href="https://twitter.com/levisigworth">@levisigworth</a>
+				</section>
+				<section>
+					<section>
+						<h2>What we'll discuss today</h2>
+					</section>
+					<section>
+						<p>Explore Paragraphs for building out content detail pages</p>
+					</section>
+					<section>
+						<p>Explore combining Paragraphs with Atomic Design</p>
+					</section>
+					<section>
+						<p>Propose a process for developing Paragraphs so they work for the content editor</p>
+					</section>
+				</section>
+				<section>
+					<section><h2>Quick Terms (just three!)</h2></section>
+					<section>What is Drupal?</section>
+					<section>What is Paragraphs?</section>
+					<section><p>Small, reusable widgets for building out the content for a detail page (think news posting, event, or person)</p></section>
+					<section>What is Atomic Design?</h2></section>
+					<section><p>Bundles of HTML, CSS, and JS that can be moved around the site and remain CONSISTENT and PREDICTABLE</p></section>
+					<section>
+						<h2>Example: Code Widget</h2>
+					</section>
+					<section data-background="images/code-screenshot.png">
+					</section>
+					<section>
+						<h3>Final Generated HTML</h3>
+					</section>
+					<section>
+						<pre>
+							<code>
+	<figure class="paragraphs-code">
+	<pre class="paragraphs-code__code">
+	  <code>
+			(CONTENT HERE)
+	  </code>
+	</pre>
+	<figcaption class="paragraphs-code__caption">
+	  <p class="paragraphs-code__text">(CAPTION HERE)</p>
+	</figcaption>
+	</figure>
+							</code>
+						</pre>
+						<p>Pattern Lab owns a template that Drupal imports. Drupal inserts content and displays the markup.</p>
+					</section>
+					<section>
+						<h3>Final Generated CSS</h3>
+					</section>
+					<section>
+						<pre>
+							<code>
+	.paragraphs-code {
+	clear: both;
+	padding: 0 0 20px 20px;
+	border-left: #f7951d 2px solid;
+	margin-left: 0;
+	}
+
+	@media (min-width: 1250px) {
+	.paragraphs-code {
+	  padding-left: 40px;
+	  margin-left: -40px;
+	}
+	}
+
+	.paragraphs-code__code {
+	background-color: #f2f2f2;
+	overflow: scroll;
+	}
+
+	.paragraphs-code__caption {
+	color: #7a7a7a;
+	border-bottom: 1px solid #f2f2f2;
+	padding-bottom: 5px;
+	}
+
+	.paragraphs-code__text {
+	margin-bottom: 0;
+	}
+						</code>
+					</pre>
+						<p>Pattern Lab generates this CSS, and the Drupal theme imports this CSS file.</p>
+					</section>
+					<section>
+						<h3>No JS for this widget</h3>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>First Component</h2>
+						<p>Display code examples in my writing posts.</p>
+					</section>
+					<section data-background="images/code-screenshot.png">
+					</section>
+					<section>
+						<h3>Step 1</h3>
+						<p>Understand that there is a need for a component.</p>
+					</section>
+					<section>
+						system thinking
+					</section>
+					<section>
+						<h3>Step 2</h3>
+						<p>Create the component in Pattern Lab.</p>
+					</section>
+					<section>
+						<ul>
+							<li>
+								Twig file: HTML
+							</li>
+							<li>
+								SCSS file: compiles to CSS
+							</li>
+							<li>
+								JSON file: sample content
+							</li>
+							<li>
+								Markdown file: usage documentation
+							</li>
+							<li>
+								JS file: Javascript
+							</li>
+						</ul>
+					</section>
+					<section>
+						<h4>Easy with Pattern Lab Starter</h4>
+						<pre>
+							<code>
+	npm run new
+							</code>
+						</pre>
+						<p>https://github.com/phase2/pattern-lab-starter</p>
+					</section>
+					<section>
+							<pre>
+								<code>
+	<{{ element ?: "figure" }} class="paragraphs-code">
+	<pre class="paragraphs-code__code">
+	  <code>
+	    {{ code }}
+	  </code>
+	</pre>
+	{% if caption %}
+	  <figcaption class="paragraphs-code__caption">
+	    <p class="paragraphs-code__text">{{ caption }}</p>
+	  </figcaption>
+	{% endif %}
+	</{{ element ?: "figure" }}>
+								</code>
+							</pre>
+							Twig markup
+					</section>
+					<section>
+						<pre>
+							<code>
+	.paragraphs-code {
+	clear: both;
+	padding: 0 0 $spacing--l $spacing--l;
+	border-left: $c-code-border 2px solid;
+	margin-left: 0;
+
+	@include breakpoint($bp--xxlarge) {
+	  padding-left: $spacing--l*2;
+	  margin-left: -$spacing--l*2;
+	}
+
+	&__code {
+	  background-color: $c-code-bg;
+	  overflow: scroll;
+	}
+
+	&__caption {
+	  color: $c-byline-color;
+	  border-bottom: 1px solid $c-byline-border;
+	  padding-bottom: $spacing--sm;
+	}
+	&__text {
+	  margin-bottom: 0;
+	}
+	}
+							</code>
+						</pre>
+						SCSS file
+					</section>
+					<section>
+						<pre>
+							<code>
+	{
+	"code": "drup(){cd /var/www/$1/sites/default/ (cdd && git pull && drush updatedb)}",
+	"caption": "This example shows how to automate your startup environment."
+	}
+							</code>
+						</pre>
+						JSON file
+					</section>
+					<section>
+						<h3>Step 3</h3>
+						<p>Test your pattern in the browser!</p>
+					</section>
+					<section>
+						<h3>Step 4</h3>
+						<p>Build functionality in Drupal</p>
+					</section>
+					<section>
+						<h4>Paragraphs</h4>
+					</section>
+					<section>
+						<h3>Step 5</h3>
+						<p>Figure out template name in Drupal</p>
+					</section>
+					<section>
+						<a href="https://www.drupal.org/docs/8/theming/twig/debugging-twig-templates">https://www.drupal.org/docs/8/theming/twig/debugging-twig-templates</a>
+					</section>
+					<section>
+						<h3>Step 6</h3>
+						<p>Pull component Twig template into Drupal theme.</p>
+					</section>
+					<section>
+						<pre>
+							<code>
+	{% embed "@molecules/paragraphs-code.twig"
+	with {
+	"code": content.field_figure_code|field_value,
+	"caption": content.field_figure_caption|field_value
+	}
+	%}
+	{% endembed %}
+							</code>
+						</pre>
+						paragraph--paragraphs-code.html.twig
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>Second Component</h2>
+						<p>Show Images in Writing Posts</p>
+					</section>
+					<section data-background="images/left.png">
+					</section>
+					<section data-background="images/right.png">
+					</section>
+					<section data-background="images/hero.png">
+					</section>
+					<section>
+						<h3>Step 1</h3>
+						<p>Understand that there is a need for a component. (system thinking)</p>
+					</section>
+					<section>
+						<h3>Step 2</h3>
+						<p>Create the component in Pattern Lab.</p>
+					</section>
+					<section>
+							<pre>
+								<code>
+	<{{ element ?: "figure" }} class="paragraphs-image{% if styleModifier %} paragraphs-image--{{ styleModifier }}{% endif %}">
+
+	<div class="paragraphs-image__image">
+	  {% block img %}
+	    {% include "@atoms/_img.twig" %}
+	  {% endblock %}
+
+	  {% if byline %}
+	    <div class="paragraphs-image__byline">
+	      <p class="paragraphs-image__text">Image courtesy <a class="link--quiet" href="{{ bylineurl }}"> {{ byline }}</a></p>
+	    </div>
+	  {% endif %}
+	</div>
+
+	{% if caption %}
+	  <figcaption class="paragraphs-image__caption">
+	    <p class="paragraphs-image__text">{{ caption }}</p>
+	  </figcaption>
+	{% endif %}
+
+	</{{ element ?: "figure" }}>
+								</code>
+							</pre>
+							Twig markup
+					</section>
+					<section>
+						<pre>
+							<code>
+	.paragraphs-image {
+	clear: both;
+	margin-left: 0;
+	margin-right: 0;
+	margin-bottom: $spacing--l*2;
+	display: table;
+
+	// styleModifier: left
+	&--left {
+	  float: none;
+	  margin-left: auto;
+	  margin-right: auto;
+	  @include breakpoint($bp--large) {
+	    float: left;
+	    margin: 0 $spacing--l $spacing--l 0;
+	    max-width: 600px;
+	  }
+	  @include breakpoint($bp--xlarge) {
+	    //margin: 0 $spacing--l $spacing--l -05%;
+	    max-width: 700px;
+	  }
+	  @include breakpoint($bp--xxxlarge) {
+	    margin: 0 $spacing--l $spacing--l -15% ;
+	  }
+	}
+
+	// styleModifier: right
+	&--right {
+	  float: none;
+	  margin-left: auto;
+	  margin-right: auto;
+	  @include breakpoint($bp--large) {
+	    float: right;
+	    margin: 0 0 $spacing--l $spacing--l;
+	    max-width: 600px;
+	  }
+	  @include breakpoint($bp--xlarge) {
+	    //margin: 0 -05% $spacing--l $spacing--l;
+	    max-width: 700px;
+	  }
+	  @include breakpoint($bp--xxxlarge) {
+	    margin: 0 -15% $spacing--l $spacing--l;
+	  }
+	}
+
+	// styleModifier: hero
+	&--hero {
+	  margin-left: auto;
+	  margin-right: auto;
+	}
+
+	&__image {
+	  position: relative;
+	  float: left;
+	  img {
+	    display: block;
+	    width: 100%;
+	  }
+	}
+	&__byline {
+	  position: absolute;
+	  bottom: 0;
+	  right: 0;
+	  @include knockout;
+
+	  // styleModifier: hero
+	  .paragraphs-image--hero & {
+	    @include breakpoint($bp--xxlarge) {
+	      transform: rotate(90deg);
+	      transform-origin: 100% 100%;
+	    }
+	  }
+
+	  // styleModifier: left
+	  .paragraphs-image--left & {
+	    @include breakpoint($bp--xxlarge) {
+	      left: inherit;
+	      right: auto;
+	      transform: rotate(270deg);
+	      transform-origin: 0 100%;
+	    }
+	  }
+
+	  // styleModifier: right
+	  .paragraphs-image--right & {
+	    @include breakpoint($bp--xxlarge) {
+	      transform: rotate(90deg);
+	      transform-origin: 100% 100%;
+	    }
+	  }
+
+
+	}
+	&__caption {
+	  color: $c-byline-color;
+	  border-bottom: 1px solid $c-byline-border;
+	  padding-bottom: $spacing--sm;
+	  clear: both;
+	  display: table-caption;
+	  caption-side: bottom;
+	}
+
+	&__text {
+	  margin-bottom: 0;
+	}
+	}
+							</code>
+						</pre>
+						SCSS file
+					</section>
+					<section>
+						<pre>
+							<code>
+	{
+	"img": "http://placehold.it/1000x400",
+	"byline": "Freddy Foto",
+	"bylineurl": "https://www.example.com",
+	"caption": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud "
+	}
+							</code>
+						</pre>
+						JSON file
+					</section>
+					<section>
+						<h3>Step 3</h3>
+						Test your pattern in the browser!
+					</section>
+					<section>
+						<h3>Step 4</h3>
+						Build functionality in Drupal
+					</section>
+					<section>
+						<h4>Paragraphs</h4>
+					</section>
+					<section>
+						<h4>Theme Function</h4>
+					</section>
+					<section>
+						<pre>
+							<code>
+	/**
+	* Implements hook_preprocess_HOOK() for paragraph--paragraphs-image.html.twig.
+	*/
+	function patternlab_preprocess_paragraph__paragraphs_image(&$variables) {
+	$paragraph = $variables['paragraph'];
+	// Get the value of the image style and add it as a class on the image field.
+	$display_image = $paragraph->get('field_figure_position')->value;
+	$variables['display_image'] = $display_image;
+	}
+							</code>
+						</pre>
+						Theme function: place in themename.theme
+					</section>
+					<section>
+						<h3>Step 5</h3>
+						Figure out template name in Drupal
+					</section>
+					<section>
+						<h3>Step 6</h3>
+						Pull component Twig template into Drupal theme.
+					</section>
+					<section>
+						<pre>
+							<code>
+	{% embed "@molecules/01-paragraphs-image.twig"
+	with {
+	"byline": content.field_figure_byline.0["#title"],
+	"bylineurl": content.field_figure_byline.0["#url"],
+	"caption": content.field_figure_caption|field_value,
+	"styleModifier": display_image
+	}
+	%}
+	{% block img %}
+	{{ content.field_figure_image|field_value }}
+	{% endblock %}
+	{% endembed %}
+							</code>
+						</pre>
+						paragraph--paragraphs-image.html.twig
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Let's talk about process</h2>
+					</section>
+
+				</section>
+
+				<section>
+					<section>
+						<h2>Third Component</h2>
+					</section>
+				</section>
+
+
+				<section>
+					<section>
+						<h2>Resources</h2>
+					</section>
+					<section>
+						<h3>Required Drupal Modules</h3>
+						<ul>
+							<li>Component Libraries: <a href="https://www.drupal.org/project/components">https://www.drupal.org/project/components</a>. Allows us to import Twig files from the library.</li>
+							<li>Twig Field Value: <a href="https://www.drupal.org/project/twig_field_value">https://www.drupal.org/project/twig_field_value</a>. Allows us to write content.field_figure_image|field_value without drilling into the array.
+						</ul>
+					</section>
+					<section>
+						<h3>Atomic Design starter themes</h3>
+						<ul>
+							<li>Emulsify: <a href="http://emulsify.info">emulsify.info</a></li>
+							<li>Particle: <a href="https://github.com/phase2/particle/tree/epic/v10">https://github.com/phase2/particle/tree/epic/v10</a></li>
+						</ul>
+					</section>
+					<section>
+						<h3>A Broader version of this talk</h3>
+						<a href="http://drupalcampnj2017.drupalcamp.org/program/sessions/first-run-component-theming-missteps-learnings-and-success.html">http://drupalcampnj2017.drupalcamp.org/program/sessions/first-run-component-theming-missteps-learnings-and-success.html</a>
+					</section>
+					<section>
+						<h3>Drupal 8 Component Theming Initiative</h3>
+						<ul>
+							<li><a href="https://www.drupal.org/node/2702061">https://www.drupal.org/node/2702061</a></li>
+						</ul>
+						<p>Learn and contribute at the same time!</p>
+					</section>
+					<section>
+						<h3>DrupalTwig Slack channel</h3>
+						<ul>
+							<li><a href="https://drupaltwig-slack.herokuapp.com/">https://drupaltwig-slack.herokuapp.com/</a></li>
+						</ul>
+						<p>I've learned a ton here. People are very helpful as long as you put in the effort.</p>
+					</section>
+					<section>
+						<h3>Front End Style Guides</h3>
+						<ul>
+							<li><a href="http://www.maban.co.uk/projects/front-end-style-guides/">Front-end Style Guides ebook</a></li>
+						</ul>
+					</section>
+					<section>
+						<h3>Atomic Design and Pattern Lab</h3>
+						<ul>
+							<li><a href="http://atomicdesign.bradfrost.com/">atomicdesign.bradfrost.com</a></li>
+							<li><a href="http://patternlab.io/">patternlab.io</a></li>
+							<li><a href="https://www.smashingmagazine.com/2016/07/building-maintaining-atomic-design-systems-pattern-lab/">Making And Maintaining Atomic Design Systems With Pattern Lab 2</a></li>
+						</ul>
+					</section>
+					<section>
+						<h3>Pattern Lab Starter</h3>
+						<ul>
+							<li><a href="https://github.com/phase2/pattern-lab-starter">github.com/phase2/pattern-lab-starter</a></li>
+						</ul>
+					</section>
+					<section>
+						<h3>BEM</h3>
+						<ul>
+							<li><a href="http://getbem.com">getbem.com</a></li>
+						</ul>
+					</section>
+					<section>
+						<h3>SASS</h3>
+						<ul>
+							<li><a href="http://sass-lang.com/guide">Sass Basics</a></li>
+						</ul>
+						<p>Use SCSS formatting!</p>
+					</section>
+					<section>
+						<h3>Additional Reading (1)</h3>
+						<ul>
+							<li><a href="http://www.mediacurrent.com/blog/integrating-components-drupal-8-part-1">
+	Integrating Components with Drupal 8 - Part 1</a></li>
+							<li><a href="http://www.mediacurrent.com/blog/integrating-components-drupal-8-part-2">
+	Integrating Components with Drupal 8 - Part 2</a></li>
+							<li><a href="http://www.mediacurrent.com/blog/integrating-components-drupal-8-part-3">
+	Integrating Components with Drupal 8 - Part 3</a></li>
+						</ul>
+					</section>
+					<section>
+						<h3>Additional Reading (2)</h3>
+						<ul>
+							<li><a href="http://jordanpagewhite.github.io/drupal-8-front-end-architecture/">
+	Drupal 8 Front-end Architecture</a></li>
+						</ul>
+						<p>There is an extensive list of additional resources at the bottom of this page.</p>
+					</section>
+				</section>
+				<section>
+					<h1>Thank you!</h1>
+					Feedback: <a href="https://github.com/wheatpenny/paragraphs-pattern-lab">https://github.com/wheatpenny/paragraphs-pattern-lab</a>. File an issue!
+				</section>
+		</div>
 		</div>
 
 		<script src="lib/js/head.min.js"></script>
