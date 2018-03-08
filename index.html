@@ -7,7 +7,7 @@
 		<title>Enabling Content Editors with Paragraphs and Atomic Design</title>
 
 		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/black.css">
+		<link rel="stylesheet" href="css/theme/blood.css">
 
 		<!-- Theme used for syntax highlighting of code -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
@@ -52,6 +52,7 @@
 					<section>What is Drupal?</section>
 					<section>What is Paragraphs?</section>
 					<section><p>Small, reusable widgets for building out the content for a detail page (think news posting, event, or person)</p></section>
+					<section data-background="images/bodyfield.png"></section>
 					<section>What is Atomic Design?</h2></section>
 					<section><p>Bundles of HTML, CSS, and JS that can be moved around the site and remain CONSISTENT and PREDICTABLE</p></section>
 					<section>
@@ -154,7 +155,7 @@
 								Markdown file: usage documentation
 							</li>
 							<li>
-								JS file: Javascript
+								JS file: JavaScript
 							</li>
 						</ul>
 					</section>
@@ -236,9 +237,6 @@
 					<section>
 						<h3>Step 4</h3>
 						<p>Build functionality in Drupal</p>
-					</section>
-					<section>
-						<h4>Paragraphs</h4>
 					</section>
 					<section>
 						<h3>Step 5</h3>
@@ -448,28 +446,6 @@
 						Build functionality in Drupal
 					</section>
 					<section>
-						<h4>Paragraphs</h4>
-					</section>
-					<section>
-						<h4>Theme Function</h4>
-					</section>
-					<section>
-						<pre>
-							<code>
-	/**
-	* Implements hook_preprocess_HOOK() for paragraph--paragraphs-image.html.twig.
-	*/
-	function patternlab_preprocess_paragraph__paragraphs_image(&$variables) {
-	$paragraph = $variables['paragraph'];
-	// Get the value of the image style and add it as a class on the image field.
-	$display_image = $paragraph->get('field_figure_position')->value;
-	$variables['display_image'] = $display_image;
-	}
-							</code>
-						</pre>
-						Theme function: place in themename.theme
-					</section>
-					<section>
 						<h3>Step 5</h3>
 						Figure out template name in Drupal
 					</section>
@@ -482,10 +458,10 @@
 							<code>
 	{% embed "@molecules/01-paragraphs-image.twig"
 	with {
-	"byline": content.field_figure_byline.0["#title"],
-	"bylineurl": content.field_figure_byline.0["#url"],
-	"caption": content.field_figure_caption|field_value,
-	"styleModifier": display_image
+	"byline": content.field_figure_byline|field_raw('title'),
+  "bylineurl": content.field_figure_byline|field_raw('url'),
+  "caption": content.field_figure_caption|field_value,
+  "styleModifier": content.field_figure_position|field_value
 	}
 	%}
 	{% block img %}
@@ -502,12 +478,74 @@
 					<section>
 						<h2>Let's talk about process</h2>
 					</section>
+					<section>
+						<span class="fragment strike">How do we make a perfect site?</span>
+					</section>
+					<section>
+						How do we make a cheap and reliable deployment process?
+					</section>
+					<section>
+						What is the smallest project that achieves our goals?
+					</section>
+					<section>
+						<h3>Step 1</h3>
+						<p>Understand that there is a need for a component. (system thinking)</p>
+					</section>
+					<section>
+						<h3>Step 2</h3>
+						<p>Create the component in Pattern Lab.</p>
+					</section>
+					<section>
+						<h3>Step 3</h3>
+						<p>STOP!</p>
+						<p>Test your pattern in the browser! Collaborate with content editors. Iterate, release, get feedback: until it has answered the question "What is the smallest thing that meets the goals?"</p>
+					</section>
+					<section>
+						<h3>Step 4</h3>
+						Build functionality in Drupal
+					</section>
+					<section>
+						<h3>Step 5</h3>
+						Figure out template name in Drupal
+					</section>
+					<section>
+						<h3>Step 6</h3>
+						Pull component Twig template into Drupal theme.
+					</section>
+					<section>
+						<h3>Release, Gather feedback, do it again!</h3>
+					</section>
+
 
 				</section>
 
 				<section>
 					<section>
-						<h2>Third Component</h2>
+						<h2>Steps to take on your next project</h2>
+					</section>
+					<section>
+						<h3>Content Editors (clients)</h3>
+					</section>
+					<section>
+						Demand that everything for review should be shown to you as functional HTML/CSS/JavaScript IN A BROWSER.
+					</section>
+					<section>
+						<h3>Developers</h3>
+					</section>
+					<section>
+						Reach out to become part of the design process.
+					</section>
+					<section>
+						If you are handed a Photoshop mockup, still prototype and deliver with Atomic Design. You will find issues that were easy to overlook in the comps. Highlight those concerns EARLY rather than LATER so that you aren't the only one dealing with them.
+					</section>
+					<section>
+						<h3>Project Managers</h3>
+					</section>
+					<section>
+						Prototype early with Atomic Design!
+					</section>
+					<section>
+						Never put Photoshop comps in front of a client. All review and approval should be in the browser with functioning HTML, CSS, and JavaScript.
 					</section>
 				</section>
 
