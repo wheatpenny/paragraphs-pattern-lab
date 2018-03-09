@@ -28,6 +28,10 @@
 					<h2>Enabling Content Editors with Paragraphs and Atomic Design</h2>
 				</section>
 				<section>
+					<h2>Slides</h2>
+					wheatpenny.github.io/paragraphs-pattern-lab/
+				</section>
+				<section>
 					<h2>Levi Sigworth</h2>
 					<a class="fragment" href="https://xiah.io">xiah.io</a>
 					<a class="fragment" href="https://drupal.org/u/wheatpenny">drupal.org/u/wheatpenny</a>
@@ -457,7 +461,7 @@
 	{% embed "@molecules/01-paragraphs-image.twig"
 	with {
 	"byline": content.field_figure_byline|field_raw('title'),
-  "bylineurl": content.field_figure_byline|field_raw('url'),
+  "bylineurl": content.field_figure_byline.0["#url"],
   "caption": content.field_figure_caption|field_value,
   "styleModifier": content.field_figure_position|field_value
 	}
